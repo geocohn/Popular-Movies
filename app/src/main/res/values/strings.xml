@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_detail">Movie detail</string>
+
+
+    <string name="jsonresults">results</string>
+    <string name="jsontitle">title</string>
+    <string name="jsonadult">adult</string>
+    <string name="jsonbackdrop">backdrop_path</string>
+    <string name="jsonposter">poster_path</string>
+    <string name="jsonid">id</string>
+    <string name="jsonoverview">overview</string>
+    <string name="jsondate">release_date</string>
+    <string name="jsonpopularity">popularity</string>
+    <string name="jsondateformat">yyyy-MM-DD</string>
+    <string name="jsonoriginallanguage">original_language</string>
+    <string name="jsonvideo">video</string>
+    <string name="jsonvoteaverage">vote_average</string>
+    <string name="jsonvotecount">vote_count</string>
+
+    <string name="tmdbimagepath">http://image.tmdb.org/t/p/w500</string>
+    <string name="tmdbscheme">http</string>
+    <string name="tmdbbaseurl">api.themoviedb.org</string>
+    <string name="tmdbapiversion">3</string>
+    <string name="tmdbdiscover">discover</string>
+    <string name="tmdbmovie">movie</string>
+    <string name="tmdbsortby">sort_by</string>
+    <string name="tmdbpopularity">popularity.desc</string>
+    <string name="tmdbapikey">api_key</string>
+
+    <string name="httpget">GET</string>
+    <string name="tmdbpage">page</string>
+
+    <string-array name = "sorting_modes">
+        <item>Most popular</item>
+        <item>Highest rated</item>
+        <item>Alphabetical</item>
+        <item>Newest</item>
+    </string-array>
+</resources>
