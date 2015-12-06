@@ -32,10 +32,36 @@
     <string name="httpget">GET</string>
     <string name="tmdbpage">page</string>
 
-    <string-array name = "sorting_modes">
+    <string-array name="sorting_modes">
         <item>Most popular</item>
         <item>Highest rated</item>
         <item>Alphabetical</item>
         <item>Newest</item>
     </string-array>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="pref_movie_list_size">Movie list size</string>
+    <string-array name="pref_movie_list_size_titles">
+        <item>20 movies</item>
+        <item>40 movies</item>
+        <item>60 movies</item>
+        <item>80 movies</item>
+        <item>100 movies</item>
+    </string-array>
+    <string-array name="pref_movie_list_size_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <!-- settings for Ringtones -->
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+    <string name="pref_title_vibrate">Vibrate</string>
+
 </resources>

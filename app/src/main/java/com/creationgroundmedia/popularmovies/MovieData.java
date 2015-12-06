@@ -19,10 +19,12 @@
 package com.creationgroundmedia.popularmovies;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -47,10 +49,12 @@ import java.util.concurrent.ExecutionException;
  */
 public class MovieData {
     public MovieData(Context context) {
-        updateMovies(context, this);
+        mContext = context;
+        updateMovieList();
     }
 
     private ArrayList<MovieFields> movieList;
+    private Context mContext;
 
     public void SortMovieList(int position) {
         if (!movieList.isEmpty()) {
@@ -83,6 +87,10 @@ public class MovieData {
 
     public void setMovieList(ArrayList<MovieFields> movieList) {
         this.movieList = movieList;
+    }
+
+    public void updateMovieList() {
+        updateMovies(mContext, this);
     }
 
     private void updateMovies(Context context, MovieData movieData) {
@@ -337,7 +345,7 @@ class FetchMovieTask extends AsyncTask {
     final private String LOG_TAG = FetchMovieTask.class.getSimpleName();
 
     private Context mContext;
-    private ArrayList<MovieFields> list = new ArrayList<MovieFields>();
+    private ArrayList<MovieFields> list = new ArrayList<>();
 
     public FetchMovieTask(Context context) {
         mContext = context;
@@ -348,8 +356,9 @@ class FetchMovieTask extends AsyncTask {
         /**
          * todo: give user progress feedback when loading is slow
          */
-        final int MAX_PAGES = 1;
-        for (int i = 0; i < MAX_PAGES; i++) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        int maxPages = Integer.valueOf(sharedPref.getString("movie_list_size", "1"));
+        for (int i = 0; i < maxPages; i++) {
             try {
                 getMovieDataFromJson(getTmdbPage(i + 1));
             } catch (JSONException e) {
@@ -446,8 +455,7 @@ class FetchMovieTask extends AsyncTask {
                     titleJSON.getLong(mContext.getString(R.string.jsonvotecount)),
                     trimLeadingThe(title));
             list.add(movie);
-        }
-        return;
+        };
     }
 
     private String trimLeadingThe(String title) {
