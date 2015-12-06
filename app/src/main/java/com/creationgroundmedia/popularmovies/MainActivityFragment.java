@@ -17,6 +17,8 @@
 
 package com.creationgroundmedia.popularmovies;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -45,6 +47,7 @@ public class MainActivityFragment extends Fragment {
 
     MovieData movieData;
     ImageAdapter movieAdapter;
+    SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
     public MainActivityFragment() {
     }
@@ -66,6 +69,21 @@ public class MainActivityFragment extends Fragment {
 
         GridView gridView = (GridView) view.findViewById(R.id.gridview);
         gridView.setAdapter(movieAdapter = new ImageAdapter(movieData, getContext()));
+
+/**
+ * listener on number of movies to load:
+ */
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                if (key.contentEquals("movie_list_size")) {
+                    movieData.updateMovieList();
+                    movieAdapter.notifyDataSetChanged();
+                }
+            }
+        };
+        prefs.registerOnSharedPreferenceChangeListener(prefListener);
 
 /**
  * when the user clicks a grid item, parcel up the data for that movie and fire off an activity to show a detail screen
@@ -112,8 +130,6 @@ public class MainActivityFragment extends Fragment {
 //                Toast.makeText(getContext(), "spinner nothing selected", Toast.LENGTH_SHORT).show();
             }
         });
-
-        return;
     }
 
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
