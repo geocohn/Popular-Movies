@@ -6,3 +6,7 @@
 .DS_Store
 /build
 /captures
+<<<<<<< HEAD
+=======
+api_key.xml
+>>>>>>> origin/master
