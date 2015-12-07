@@ -115,8 +115,8 @@ public class MainActivityFragment extends Fragment {
         MenuItem item = menu.findItem(R.id.action_sorting_spinner);
         Spinner sortingSpinner = (Spinner) MenuItemCompat.getActionView(item);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.sorting_modes, android.R.layout.simple_spinner_item);
-        spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                R.array.sorting_modes, R.layout.spinner_item);
+        spinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
         sortingSpinner.setAdapter(spinnerAdapter);
         sortingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
