@@ -18,5 +18,5 @@
   -->
 
 <resources>
-    <string name="tmdbapikeyvalue">YourApiKeyGoesHere</string>
+    <string name="tmdbapikeyvalue">ReplaceWithTheRealApiKey</string>
 </resources>

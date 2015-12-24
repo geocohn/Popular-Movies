@@ -50,54 +50,16 @@ import java.util.concurrent.ExecutionException;
 public class MovieData {
     public MovieData(Context context) {
         mContext = context;
-        updateMovieList();
+        updateMovies(context);
     }
 
-    private ArrayList<MovieFields> movieList;
     private Context mContext;
 
-    public void SortMovieList(int position) {
-        if (!movieList.isEmpty()) {
-            switch (position) {
-                case 0:
-                    Collections.sort(movieList, new PopularityDescComparator());
-                    break;
-                case 1:
-                    Collections.sort(movieList, new VoteAverageDescComparator());
-                    break;
-                case 2:
-                    Collections.sort(movieList, new TitleComparator());
-                    break;
-                case 3:
-                    Collections.sort(movieList, new DateDescComparator());
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    public ArrayList<MovieFields> getMovieList() {
-        return movieList;
-    }
-
-    public int getCount() {
-        return movieList.size();
-    }
-
-    public void setMovieList(ArrayList<MovieFields> movieList) {
-        this.movieList = movieList;
-    }
-
-    public void updateMovieList() {
-        updateMovies(mContext, this);
-    }
-
-    private void updateMovies(Context context, MovieData movieData) {
+    private void updateMovies(Context context) {
         FetchMovieTask movieTask = new FetchMovieTask(context);
         movieTask.execute();
         try {
-            movieData.setMovieList((ArrayList<MovieFields>) movieTask.get());
+            movieTask.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -337,132 +299,3 @@ class MovieFields implements Parcelable {
     }
 }
 
-/**
- * uses the tmdb API to load the most popular current movies
- */
-class FetchMovieTask extends AsyncTask {
-
-    final private String LOG_TAG = FetchMovieTask.class.getSimpleName();
-
-    private Context mContext;
-    private ArrayList<MovieFields> list = new ArrayList<>();
-
-    public FetchMovieTask(Context context) {
-        mContext = context;
-    }
-
-    @Override
-    protected ArrayList<MovieFields> doInBackground(Object[] params) {
-        /**
-         * todo: give user progress feedback when loading is slow
-         */
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        int maxPages = Integer.valueOf(sharedPref.getString("movie_list_size", "1"));
-        for (int i = 0; i < maxPages; i++) {
-            try {
-                getMovieDataFromJson(getTmdbPage(i + 1));
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, "Error parsing JSON", e);
-            }
-        }
-        return list;
-    }
-
-/**
- * do a TMDB get for a single page sorted by popularity and return the JSON string
- */
-    private String getTmdbPage(int page) {
-        // These need to be declared outside the try/catch
-        // so that they can be closed in the finally block.
-        URL url;
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-
-        // Will contain the raw JSON response as a string.
-        String movieJsonStr = null;
-
-        try {
-            Uri.Builder builder = new Uri.Builder();
-            builder.scheme(mContext.getString(R.string.tmdbscheme));
-            builder.authority(mContext.getString(R.string.tmdbbaseurl));
-            builder.appendPath(mContext.getString(R.string.tmdbapiversion));
-            builder.appendPath(mContext.getString(R.string.tmdbdiscover));
-            builder.appendPath(mContext.getString(R.string.tmdbmovie));
-            builder.appendQueryParameter(mContext.getString(R.string.tmdbsortby), mContext.getString(R.string.tmdbpopularity));
-            builder.appendQueryParameter(mContext.getString(R.string.tmdbpage), String.valueOf(page));
-            builder.appendQueryParameter(mContext.getString(R.string.tmdbapikey), mContext.getString(R.string.tmdbapikeyvalue));
-
-            url = new URL(builder.build().toString());
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod(mContext.getString(R.string.httpget));
-            urlConnection.connect();
-
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer stringBuffer = new StringBuffer();
-            if (inputStream == null) {
-                return null;
-            }
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                stringBuffer.append(line + "\n");
-            }
-            if (stringBuffer.length() == 0) {
-                return null;
-            }
-
-            movieJsonStr = stringBuffer.toString();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error", e);
-            return null;
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader == null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
-                }
-            }
-        }
-        return movieJsonStr;
-    }
-
-    private void getMovieDataFromJson(String movieJsonStr) throws JSONException {
-
-        if (movieJsonStr == null) {
-            return;
-        }
-        JSONObject movieJSON = new JSONObject(movieJsonStr);
-        JSONArray movieList = movieJSON.getJSONArray(mContext.getString(R.string.jsonresults));
-        for (int i = 0; i < movieList.length(); i++) {
-            JSONObject titleJSON = movieList.getJSONObject(i);
-            String title = titleJSON.getString(mContext.getString(R.string.jsontitle));
-            MovieFields movie = new MovieFields(
-                    titleJSON.getBoolean(mContext.getString(R.string.jsonadult)),
-                    mContext.getString(R.string.tmdbimagepath) + titleJSON.getString(mContext.getString(R.string.jsonbackdrop)),
-                    titleJSON.getLong(mContext.getString(R.string.jsonid)),
-                    titleJSON.getString(mContext.getString(R.string.jsonoriginallanguage)),
-                    titleJSON.getString(mContext.getString(R.string.jsonoverview)),
-                    titleJSON.getString(mContext.getString(R.string.jsondate)),
-                    mContext.getString(R.string.tmdbimagepath) + titleJSON.getString(mContext.getString(R.string.jsonposter)),
-                    titleJSON.getDouble(mContext.getString(R.string.jsonpopularity)),
-                    titleJSON.getString(mContext.getString(R.string.jsontitle)),
-                    titleJSON.getBoolean(mContext.getString(R.string.jsonvideo)),
-                    titleJSON.getDouble(mContext.getString(R.string.jsonvoteaverage)),
-                    titleJSON.getLong(mContext.getString(R.string.jsonvotecount)),
-                    trimLeadingThe(title));
-            list.add(movie);
-        };
-    }
-
-    private String trimLeadingThe(String title) {
-        if (title.startsWith("The ")) {
-            return title.substring(4);
-        } else {
-            return title;
-        }
-    }
-}
