@@ -17,13 +17,13 @@
   ~  */
   -->
 
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="20sp"
-    android:gravity="left"
-    android:textColor="@color/white"
-    android:background="@color/colorPrimary"
-    android:padding="8dp"
-    />
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/ic_favorite_border_gray_24dp"
+        android:state_selected="false">
+    </item>
+    <item
+        android:drawable="@drawable/ic_favorite_red_24dp"
+        android:state_selected="true">
+    </item>
+</selector>

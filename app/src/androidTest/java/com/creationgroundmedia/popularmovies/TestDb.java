@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by geo on 12/19/15.
+ * sqlite tests
  */
 public class TestDb extends AndroidTestCase {
     public static final String LOG_TAG = TestDb.class.getSimpleName();
@@ -72,7 +72,7 @@ public class TestDb extends AndroidTestCase {
         locationColumnHashSet.add(MoviesContract.MovieEntry.COLUMN_ADULT);
         locationColumnHashSet.add(MoviesContract.MovieEntry.COLUMN_BACKDROP_PATH);
         locationColumnHashSet.add(MoviesContract.MovieEntry.COLUMN_ID_KEY);
-        locationColumnHashSet.add(MoviesContract.MovieEntry.COLUMN_KEEPER);
+        locationColumnHashSet.add(MoviesContract.MovieEntry.COLUMN_FAVORITE);
         locationColumnHashSet.add(MoviesContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE);
         locationColumnHashSet.add(MoviesContract.MovieEntry.COLUMN_OVERVIEW);
         locationColumnHashSet.add(MoviesContract.MovieEntry.COLUMN_POPULARITY);
@@ -145,7 +145,8 @@ public class TestDb extends AndroidTestCase {
         movieValues.put(MoviesContract.MovieEntry.COLUMN_ADULT, 1);
         movieValues.put(MoviesContract.MovieEntry.COLUMN_BACKDROP_PATH, "http://image.tmdb.org/t/p/w500/D6e8RJf2qUstnfkTslTXNTUAlT.jpg");
         movieValues.put(MoviesContract.MovieEntry.COLUMN_ID_KEY, rowId);
-        movieValues.put(MoviesContract.MovieEntry.COLUMN_KEEPER, 1);
+        movieValues.put(MoviesContract.MovieEntry.COLUMN_FAVORITE, 1);
+        movieValues.put(MoviesContract.MovieEntry.COLUMN_FRESH, 0);
         movieValues.put(MoviesContract.MovieEntry.COLUMN_ORIGINAL_LANGUAGE, "English");
         movieValues.put(MoviesContract.MovieEntry.COLUMN_OVERVIEW, "An apocalyptic story set in the furthest reaches of our planet, in a stark desert landscape where humanity is broken, and most everyone is crazed fighting for the necessities of life. Within this world exist two rebels on the run who just might be able to restore order. There's Max, a man of action and a man of few words, who seeks peace of mind following the loss of his wife and child in the aftermath of the chaos. And Furiosa, a woman of action and a woman who believes her path to survival may be achieved if she can make it across the desert back to her childhood homeland.");
         movieValues.put(MoviesContract.MovieEntry.COLUMN_POPULARITY, "n20.600143");

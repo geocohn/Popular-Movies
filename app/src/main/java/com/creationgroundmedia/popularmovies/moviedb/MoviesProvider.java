@@ -24,8 +24,21 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+/**
+ * This content provider is a little unusual in the way insert() and bulkInsert() work.
+ * The idea is to mark new data as FRESH, so that the client can identify FAVORITES and
+ * newly loaded data. That allows purging of old data that isn't marked FAVORITE.
+ * The client is expected to load new data, delete any rows that are neither FRESH nor FAVORITE,
+ * and then zero the FRESH columns.
+ */
 
 public class MoviesProvider extends ContentProvider {
+    final static private String LOG_TAG = MoviesProvider.class.getSimpleName();
+    public static final String ID_SELECTION = MoviesContract.MovieEntry.COLUMN_ID_KEY + " = ?";
+
     public MoviesProvider() {
     }
     // The URI Matcher used by this content provider.
@@ -46,7 +59,7 @@ public class MoviesProvider extends ContentProvider {
 
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsDeleted;
@@ -81,15 +94,31 @@ public class MoviesProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
+        final ContentValues cvFresh = new ContentValues();
+        cvFresh.put(MoviesContract.MovieEntry.COLUMN_FRESH, 1);
 
         switch (match) {
             case MOVIES: {
-                long id = db.insertWithOnConflict(MoviesContract.MovieEntry.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
-                if ( id > 0 )
+                long id = 0;
+                // update an existing row as long as it's not a favorite
+                // This insures the FRESH field gets reinitialized
+                String[] selectionThisKey = {values.getAsString(MoviesContract.MovieEntry.COLUMN_ID_KEY)};
+                // update the FRESH column of an existing row if its id matches
+                int rows = db.update(MoviesContract.MovieEntry.TABLE_NAME,
+                        cvFresh,
+                        ID_SELECTION,
+                        selectionThisKey);
+                if (rows <= 0) {
+                    // if it doesn't exist, go ahead and insert it
+                    id = db.insert(MoviesContract.MovieEntry.TABLE_NAME,
+                            null,
+                            values);
+                }
+                if ( id >= 0 )
                     returnUri = MoviesContract.MovieEntry.buildMoviesUri(id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
@@ -109,26 +138,50 @@ public class MoviesProvider extends ContentProvider {
     }
 
     @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
+    public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
+        final ContentValues cvFresh = new ContentValues();
+        cvFresh.put(MoviesContract.MovieEntry.COLUMN_FRESH, 1);
         switch (match) {
             case MOVIES:
+                int updates = 0;
+                long id = 0;
+                int inserts = 0;
                 db.beginTransaction();
-                int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        long _id = db.insertWithOnConflict(MoviesContract.MovieEntry.TABLE_NAME, null, value, SQLiteDatabase.CONFLICT_IGNORE);
-                        if (_id != -1) {
-                            returnCount++;
-                        }
+                        String[] selectionThisKey = {value.getAsString(MoviesContract.MovieEntry.COLUMN_ID_KEY)};
+                        // update the FRESH column of an existing row if its id matches
+                        int rows = db.update(MoviesContract.MovieEntry.TABLE_NAME,
+                                cvFresh,
+                                ID_SELECTION,
+                                selectionThisKey);
+                        if (rows > 0) {
+                            updates++;
+                        } else {
+                            // if it doesn't exist, go ahead and insert it
+                            id = db.insert(MoviesContract.MovieEntry.TABLE_NAME,
+                                    null,
+                                    value);
+                            if (id != -1) {
+                                inserts++;
+                            }                        }
                     }
                     db.setTransactionSuccessful();
                 } finally {
                     db.endTransaction();
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
-                return returnCount;
+                int nRows = updates + inserts;
+                Log.d(LOG_TAG, "bulk inserted "
+                        + nRows
+                        + " rows ("
+                        + updates
+                        +" updates and "
+                        + inserts
+                        + " inserts)");
+                return nRows;
             default:
                 return super.bulkInsert(uri, values);
         }
@@ -141,7 +194,7 @@ public class MoviesProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection,
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {

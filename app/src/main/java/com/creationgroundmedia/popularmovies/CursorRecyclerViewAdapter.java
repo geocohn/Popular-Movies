@@ -27,11 +27,10 @@ import com.creationgroundmedia.popularmovies.moviedb.MoviesContract;
 
 /**
  * Created by skyfishjy on 10/31/14.
+ * adopted and modified for this app
  */
 
 public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
-
-    private Context mContext;
 
     private Cursor mCursor;
 
@@ -42,13 +41,11 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
     private DataSetObserver mDataSetObserver;
 
     public CursorRecyclerViewAdapter(Context context, Cursor cursor) {
-        mContext = context;
-        mCursor = cursor;
         mDataValid = cursor != null;
         mRowIdColumn = mDataValid ? mCursor.getColumnIndex("_id") : -1;
         mDataSetObserver = new NotifyingDataSetObserver();
-        if (mCursor != null) {
-            mCursor.registerDataSetObserver(mDataSetObserver);
+        if (cursor != null) {
+            cursor.registerDataSetObserver(mDataSetObserver);
         }
     }
 

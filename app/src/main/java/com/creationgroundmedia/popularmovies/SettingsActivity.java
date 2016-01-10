@@ -18,12 +18,14 @@
 
 package com.creationgroundmedia.popularmovies;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -39,7 +41,7 @@ import android.view.MenuItem;
 
 /**
  * built using Android Studio Empty Activity with a fragment, and modified to use a PreferenceFragment
- * to get the number of movies the user wants to load.
+ * to get the number of movies the user wants to load from the Internet.
  *
  * Ugly, but it works
  */
@@ -81,7 +83,7 @@ public class SettingsActivity extends AppCompatActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("movie_list_size"));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.movie_list_size_name)));
         }
 
         @Override
@@ -168,5 +170,10 @@ public class SettingsActivity extends AppCompatActivity {
                         .getString(preference.getKey(), ""));
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public Intent getParentActivityIntent() {
+        return super.getParentActivityIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    }
 
 }

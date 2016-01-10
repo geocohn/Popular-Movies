@@ -24,7 +24,10 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * Created by geo on 12/18/15.
+ * All db columns come from the themoviedb API (including the index) except for
+ * sorttitle, favorite, and fresh. Sorttitle is derived from title, but has "the"
+ * trimmed off the front if it was there. Favorite keeps track of user chosen favorites,
+ * and fresh is used by the client to identify stale entries so that they can be deleted.
  */
 public class MoviesContract {
     public static final String CONTENT_AUTHORITY = "com.creationgroundmedia.popularmovies.moviedb";
@@ -72,7 +75,9 @@ public class MoviesContract {
         // Same as title, stored as a string, but with "The" trimmed off the beginning if it was there
         public static final String COLUMN_SORTTITLE = "sortTitle";
         // Whether or not the movie should persist between refreshes, stored as a boolean (integer 0 or 1)
-        public static final String COLUMN_KEEPER = "keeper";
+        public static final String COLUMN_FAVORITE = "favorite";
+        // Whether or not the movie fresh in from tmdb, stored as a boolean (integer 0 or 1)
+        public static final String COLUMN_FRESH = "fresh";
 
 
         public static Uri buildMoviesUri(long id) {

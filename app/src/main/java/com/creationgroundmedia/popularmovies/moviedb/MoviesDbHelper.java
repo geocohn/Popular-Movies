@@ -23,7 +23,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Created by geo on 12/18/15.
+ * Creates the movies table
  */
 public class MoviesDbHelper extends SQLiteOpenHelper {
 
@@ -52,7 +52,8 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
                 MoviesContract.MovieEntry.COLUMN_VOTE_AVERAGE + " STRING NOT NULL," +
                 MoviesContract.MovieEntry.COLUMN_VOTE_COUNT + " INTEGER NOT NULL," +
                 MoviesContract.MovieEntry.COLUMN_SORTTITLE + " STRING NOT NULL," +
-                MoviesContract.MovieEntry.COLUMN_KEEPER + " INTEGER NOT NULL" +
+                MoviesContract.MovieEntry.COLUMN_FAVORITE + " INTEGER NOT NULL," +
+                MoviesContract.MovieEntry.COLUMN_FRESH + " INTEGER NOT NULL" +
                 " );";
 
         db.execSQL(SQL_CREATE_MOVIES_TABLE);

@@ -19,7 +19,8 @@
     <string name="jsonvoteaverage">vote_average</string>
     <string name="jsonvotecount">vote_count</string>
 
-    <string name="tmdbimagepath">http://image.tmdb.org/t/p/w500</string>
+    <string name="tmdbposterpath">http://image.tmdb.org/t/p/w500</string>
+    <string name="tmdbbackdroppath">http://image.tmdb.org/t/p/w1280</string>
     <string name="tmdbscheme">http</string>
     <string name="tmdbbaseurl">api.themoviedb.org</string>
     <string name="tmdbapiversion">3</string>
@@ -66,5 +67,21 @@
 
     <string name="title_movie_list">Movies</string>
     <string name="title_movie_detail">Movie detail</string>
+    <string name="content_authority">com.creationgroundmedia.popularmovies.moviedb</string>
+    <string name="sync_account_type">popularmovies.creationgroundmedia.com</string>
+    <string name="sorting_order">Sorting order</string>
+    <string name="favorites_only">Favorites only</string>
+    <string name="tmdbVideos">videos</string>
+    <string name="jsonsite">site</string>
+    <string name="jsonname">name</string>
+    <string name="jsonkey">key</string>
+    <string name="movie_list_size_name">movie_list_size</string>
+    <string name="tmdbreviews">reviews</string>
+    <string name="jsonauthor">author</string>
+    <string name="jsoncontent">content</string>
+    <string name="jsonurl">url</string>
+    <string name="jsonreviewid">id</string>
+    <string name="movie_poster_image">Movie poster image</string>
+    <string name="movie_backdrop_image">Movie backdrop image</string>
 
 </resources>

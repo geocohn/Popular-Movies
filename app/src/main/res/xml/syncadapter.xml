@@ -17,13 +17,10 @@
   ~  */
   -->
 
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="20sp"
-    android:gravity="left"
-    android:textColor="@color/white"
-    android:background="@color/colorPrimary"
-    android:padding="8dp"
-    />
+<sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
+android:contentAuthority="@string/content_authority"
+android:accountType="@string/sync_account_type"
+android:userVisible="false"
+android:supportsUploading="false"
+android:allowParallelSyncs="false"
+android:isAlwaysSyncable="true" />

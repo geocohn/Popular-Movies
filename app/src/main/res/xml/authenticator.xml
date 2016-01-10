@@ -17,13 +17,9 @@
   ~  */
   -->
 
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="20sp"
-    android:gravity="left"
-    android:textColor="@color/white"
-    android:background="@color/colorPrimary"
-    android:padding="8dp"
-    />
+<account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accountType="@string/sync_account_type"
+    android:icon="@mipmap/ic_launcher"
+    android:smallIcon="@mipmap/ic_launcher"
+    android:label="@string/app_name">
+</account-authenticator>

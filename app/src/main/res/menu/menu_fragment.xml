@@ -5,8 +5,14 @@
     tools:context="com.creationgroundmedia.popularmovies.MainActivity">
     <item
         android:id="@+id/action_sorting_spinner"
-        android:title="Sorting order"
+        android:title="@string/sorting_order"
         app:actionViewClass="android.widget.Spinner"
         android:visible="true"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_faves_only"
+        android:title="@string/favorites_only"
+        android:visible="true"
+        app:showAsAction="always"
+        app:actionLayout="@layout/actionbar_fave_toogle" />
 </menu>
