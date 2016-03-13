@@ -4,7 +4,7 @@
 
 Presents a grid of popular movie poster frames, and allows the user to view detailed information for each one.
 
-![screen shot](https://github.com/geocohn/Popular-Movies/Screenshot_20160313-113554.png)
+![screen shot](https://github.com/geocohn/Popular-Movies/blob/master/Screenshot_20160313-113554.png?raw=true)
 
 This was developed for Project 2 as part of the Android Developer Nanodegree program at Udacity.
 
